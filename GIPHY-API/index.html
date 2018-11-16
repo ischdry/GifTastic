@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>NFL GIFS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <div class="jumbotron jumbotron-fluid center fontchange" id="mainbanner">
+        <div class="container">
+            <h1 class="display-4">NFL GIF MACHINE</h1>
+            <p class="lead">Get Ready for Football!</p>
+        </div>
+    </div>
+
+    <div class=" fluid-container " id="buttonContainer"> 
+
+
+    </div>
+
+    <div class="fluid-container">
+        <div class="row">
+            <div class="col-9 border" >
+            <div id= "gifContainer" class="container"> 
+
+            </div>
+            </div>
+            <div class="col-3 border ">
+            <div id = "addTag">
+                    <div> <p> Add any sports nfl team here </p> <div>
+                    <input id="searchBar" type="text" class="textbox" placeholder="Search" val="" >
+                    <input id ="buttonSearch" title="Search" value="Add" type="submit" class="button" >
+               
+            </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+$(document).ready(function() {
+
+var buttons = [ 
+    'New York Giants', 
+    'Washington Redskins',
+    'Philadelphia Eagles',
+    'Dallas Cowboys',
+    'Green Bay Packers',
+    'Minnesota Vikings',
+    'Detroit Lions',
+    'Chicago Bears',
+    'Los Angeles Rams',
+    'Seattle Seahwaks',
+    'San Francisco 49ers',
+    'Arizona Cardinals'
+    ];
+
+function addButtons () {
+    var listButtons = $('<button>');
+    listButtons.text(buttons[i]);
+    listButtons.val (buttons[i]); 
+    listButtons.addClass ("btn btn-primary margin");
+    listButtons.attr("data-search", buttons [i]);
+
+    $('#buttonContainer').append(listButtons); 
+};
+for (var i=0; i< buttons.length; i++) {
+    addButtons(); 
+    // the new button that gets created does not have  trigger the ajax call
+}
+
+
+$("#buttonSearch").on('click',function (){
+    var temp = $("#searchBar").val();
+    buttons.push(temp);
+    i = (buttons.length-1);
+    addButtons(i);
+});
+
+$(".btn").on ('click', function () {
+
+    var x = $(this).val();
+    console.log (x);
+    var queryURL = "http://api.giphy.com/v1/gifs/search?q="+x+"&api_key=Ab5drtd05NGxpfKyNcuKHeMCnZGDkk1G&limit=10";
+    console.log(queryURL);
+    $.ajax({ 
+        url:queryURL,
+        method: 'GET'
+    }).done(function (response) {
+
+            $("#gifContainer").empty();
+            
+            var results = response.data;
+
+            
+            for (let i = 0; i < results.length; i++) {
+
+                var gifDiv =$("<div>");
+                gifDiv.append(results[i].rating + "<p>");
+                var newImg = $("<img>");
+                newImg.attr ({"src": results[i].images.downsized.url});
+                newImg.addClass('gifSize');
+
+                gifDiv.append(newImg);
+               
+                $("#gifContainer").prepend(gifDiv);
+
+            }
+   })
+});
+
+
+})
+
+   </script>  
+</body>
+</html>
